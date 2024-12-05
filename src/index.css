@@ -12,9 +12,21 @@ body {
   font-family: 'Space Grotesk', sans-serif;
 }
 
-@media (max-width: 768px) {
+/* Show default cursor on touch devices and small screens */
+@media (hover: none), (max-width: 768px) {
   body {
-    cursor: auto;
+    cursor: auto !important;
+  }
+  
+  a, button {
+    cursor: pointer !important;
+  }
+}
+
+/* Hide custom cursor on touch devices */
+@media (hover: none) {
+  .custom-cursor {
+    display: none !important;
   }
 }
 

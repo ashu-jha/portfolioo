@@ -1,11 +1,20 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 export const CustomCursor = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
+    // Check if device is touch-enabled
+    const checkTouchDevice = () => {
+      setIsTouchDevice(('ontouchstart' in window) || (navigator.maxTouchPoints > 0));
+    };
+
+    checkTouchDevice();
+    window.addEventListener('resize', checkTouchDevice);
+
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -13,20 +22,27 @@ export const CustomCursor = () => {
     const handleMouseEnter = () => setIsHovering(true);
     const handleMouseLeave = () => setIsHovering(false);
 
-    window.addEventListener('mousemove', updateMousePosition);
-    document.querySelectorAll('a, button').forEach(element => {
-      element.addEventListener('mouseenter', handleMouseEnter);
-      element.addEventListener('mouseleave', handleMouseLeave);
-    });
+    if (!isTouchDevice) {
+      window.addEventListener('mousemove', updateMousePosition);
+      document.querySelectorAll('a, button').forEach(element => {
+        element.addEventListener('mouseenter', handleMouseEnter);
+        element.addEventListener('mouseleave', handleMouseLeave);
+      });
+    }
 
     return () => {
-      window.removeEventListener('mousemove', updateMousePosition);
-      document.querySelectorAll('a, button').forEach(element => {
-        element.removeEventListener('mouseenter', handleMouseEnter);
-        element.removeEventListener('mouseleave', handleMouseLeave);
-      });
+      window.removeEventListener('resize', checkTouchDevice);
+      if (!isTouchDevice) {
+        window.removeEventListener('mousemove', updateMousePosition);
+        document.querySelectorAll('a, button').forEach(element => {
+          element.removeEventListener('mouseenter', handleMouseEnter);
+          element.removeEventListener('mouseleave', handleMouseLeave);
+        });
+      }
     };
-  }, []);
+  }, [isTouchDevice]);
+
+  if (isTouchDevice) return null;
 
   const variants = {
     default: {
