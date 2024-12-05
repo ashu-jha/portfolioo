@@ -10,23 +10,17 @@ body {
   background-color: black;
   cursor: none;
   font-family: 'Space Grotesk', sans-serif;
+  touch-action: none; /* Prevent default touch behaviors */
 }
 
-/* Show default cursor on touch devices and small screens */
-@media (hover: none), (max-width: 768px) {
+/* Small screen adjustments */
+@media (max-width: 768px) {
   body {
-    cursor: auto !important;
+    cursor: none;
   }
   
   a, button {
-    cursor: pointer !important;
-  }
-}
-
-/* Hide custom cursor on touch devices */
-@media (hover: none) {
-  .custom-cursor {
-    display: none !important;
+    cursor: none;
   }
 }
 
